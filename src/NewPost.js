@@ -3,7 +3,7 @@ import axios from 'axios';
 import Button from './styled-components/Button';
 import styled from 'styled-components';
 
-function NewPost() {
+function NewPost(props) {
     const [postMessage, setPostMessage] = useState('');
 
     const axiosConfig = {
@@ -29,6 +29,7 @@ function NewPost() {
                 console.log("RESPONSE RECEIVED: ", res);
 
                 if (res.data.message === 'Post added') {
+                    props.onAddPost(postMessage);
                     setPostMessage('');
                 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -16,7 +16,6 @@ import styled from 'styled-components';
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('user_data') !== null);
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const axiosConfig = {
     headers: {
@@ -26,22 +25,7 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    let intervalId = setInterval(() => showLoginPopup(), 10000);
-
-    return function cleanup() {
-      console.log(`Clean Interval - ${Date.now()}`);
-      clearInterval(intervalId);
-    }
-  }, []);
-
-  const showLoginPopup = () => {
-    if (!isLoggedIn) {
-      setIsPopupVisible(true);
-    }
-  };
-
-  const logout = () => {
+  const onLogout = () => {
     if (isLoggedIn) {
       axios.post(
         'https://akademia108.pl/api/social-app/user/logout',
@@ -58,10 +42,11 @@ function App() {
     }
   };
 
-  const login = () => {
-    setIsPopupVisible(false);
+  const onLogin = () => {
     setIsLoggedIn(true);
   }
+
+
 
   return (
     <Router>
@@ -78,7 +63,7 @@ function App() {
               (isLoggedIn ?
                 <>
                   <NavListItem>
-                    <Link to="/login" onClick={logout}>Logout</Link>
+                    <Link to="/login" onClick={onLogout}>Logout</Link>
                   </NavListItem>
                 </>
                 :
@@ -101,10 +86,10 @@ function App() {
 
           <Switch>
             <Route exact path="/">
-              <Feed isLoggedIn={isLoggedIn}/>
+              <Feed isLoggedIn={isLoggedIn} onLogin={onLogin}/>
             </Route>
             <Route path="/login">
-              <Login onLogin={login} />
+              <Login onLogin={onLogin} />
             </Route>
             <Route path="/signup">
               <Signup />
@@ -176,22 +161,6 @@ const NavListItem = styled.li`
   a:hover {
     color: orange;
   }
-`;
-
-const Popup = styled.div`
-  background-color: white;
-  border: 1px solid black;
-  position: fixed;
-  left: 45%;
-  height: 250px;
-  width: 300px;
-  transition: all 1s;
-
-  ${props => (props.visible ?
-    'bottom: 0px;'
-    :
-    'bottom: -250px;'
-  )}
 `;
 
 export default App;
