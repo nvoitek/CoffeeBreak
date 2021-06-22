@@ -92,12 +92,12 @@ function Login(props) {
     return (
         <FormContainer>
             <LoginForm className="Signup-form" onSubmit={onLogin}>
-                <InfoParagraph visible={validationData.isSubmitted}>{validationData.submitMsg}</InfoParagraph>
-                <ErrorParagraph visible={validationData.hasErrors}>{validationData.submitMsg}</ErrorParagraph>
-                <ErrorParagraph visible={validationData.isUsernameEmpty}>Username can't be empty</ErrorParagraph>
+                {(validationData.isSubmitted) ? <InfoParagraph>{validationData.submitMsg}</InfoParagraph> : ''}
+                {(validationData.hasErrors) ? <ErrorParagraph>{validationData.submitMsg}</ErrorParagraph> : ''}
+                {(validationData.isUsernameEmpty) ? <ErrorParagraph>Username can't be empty</ErrorParagraph> : ''}
                 <Input type="text" name="username" placeholder="username" value={loginData.username} onChange={updateFormFields}/>
 
-                <ErrorParagraph visible={validationData.isPasswordEmpty}>Password can't be empty</ErrorParagraph>
+                {(validationData.isPasswordEmpty) ? <ErrorParagraph>Password can't be empty</ErrorParagraph> : ''}
                 <Input type="password" name="password" placeholder="password" value={loginData.password} onChange={updateFormFields}/>
 
                 <Button>Submit</Button>
@@ -120,12 +120,10 @@ const LoginForm = styled.form`
 
 const InfoParagraph = styled.p`
     color: green;
-    display: ${props => (props.visible ? 'block' : 'none')};
 `;
 
 const ErrorParagraph = styled.p`
     color: red;
-    display: ${props => (props.visible ? 'block' : 'none')};
 `;
 
 const Input = styled.input`

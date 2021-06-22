@@ -97,19 +97,20 @@ function Signup() {
     return (
         <FormContainer>
             <SignupForm className="Signup-form" onSubmit={onSignup}>
-                <InfoParagraph visible={validationData.isSubmitted}>{validationData.submitMsg}</InfoParagraph>
-                <ErrorParagraph visible={validationData.hasErrors}>{validationData.submitMsg}</ErrorParagraph>
-                <ErrorParagraph visible={validationData.isUsernameEmpty}>Username can't be empty</ErrorParagraph>
+                {(validationData.isSubmitted) ? <InfoParagraph>{validationData.submitMsg}</InfoParagraph> : ''}
+                {(validationData.hasErrors) ? <ErrorParagraph>{validationData.submitMsg}</ErrorParagraph> : ''}
+                {(validationData.isUsernameEmpty) ? <ErrorParagraph>Username can't be empty</ErrorParagraph> : ''}
+                
                 <Input type="text" name="username" placeholder="username" value={signupData.username} onChange={updateFormFields} />
 
-                <ErrorParagraph visible={validationData.isEmailEmpty}>Email can't be empty</ErrorParagraph>
+                {(validationData.isEmailEmpty) ? <ErrorParagraph>Email can't be empty</ErrorParagraph> : ''}
                 <Input type="email" name="email" placeholder="email" value={signupData.email} onChange={updateFormFields} />
 
-                <ErrorParagraph visible={validationData.isPasswordEmpty}>Password can't be empty</ErrorParagraph>
+                {(validationData.isPasswordEmpty) ? <ErrorParagraph>Password can't be empty</ErrorParagraph> : ''}
                 <Input type="password" name="password" placeholder="password" value={signupData.password} onChange={updateFormFields} />
 
-                <ErrorParagraph visible={validationData.isConfirmPasswordEmpty}>Password can't be empty</ErrorParagraph>
-                <ErrorParagraph visible={validationData.doPasswordMatch}>Passwords don't match</ErrorParagraph>
+                {(validationData.isConfirmPasswordEmpty) ? <ErrorParagraph>Password can't be empty</ErrorParagraph> : ''}
+                {(validationData.doPasswordMatch) ? <ErrorParagraph>Passwords don't match</ErrorParagraph> : ''}
                 <Input type="password" name="confirmPassword" placeholder="confirm password" value={signupData.confirmPassword} onChange={updateFormFields} />
 
                 <Button>Submit</Button>
@@ -132,12 +133,10 @@ const SignupForm = styled.form`
 
 const InfoParagraph = styled.p`
     color: green;
-    display: ${props => (props.visible ? 'block' : 'none')};
 `;
 
 const ErrorParagraph = styled.p`
     color: red;
-    display: ${props => (props.visible ? 'block' : 'none')};
 `;
 
 const Input = styled.input`
