@@ -27,26 +27,10 @@ function Signup() {
 
         setValidationData(prevState => ({
             ...prevState,
-            isUsernameEmpty: !signupData.username
-        }));
-
-        setValidationData(prevState => ({
-            ...prevState,
-            isEmailEmpty: !signupData.email
-        }));
-
-        setValidationData(prevState => ({
-            ...prevState,
-            isPasswordEmpty: !signupData.password
-        }));
-
-        setValidationData(prevState => ({
-            ...prevState,
-            isConfirmPasswordEmpty: !signupData.confirmPassword
-        }));
-
-        setValidationData(prevState => ({
-            ...prevState,
+            isUsernameEmpty: !signupData.username,
+            isEmailEmpty: !signupData.email,
+            isPasswordEmpty: !signupData.password,
+            isConfirmPasswordEmpty: !signupData.confirmPassword,
             doPasswordMatch: signupData.password !== signupData.confirmPassword
         }));
 

@@ -30,11 +30,7 @@ function Login(props) {
 
         setValidationData(prevState => ({
             ...prevState,
-            isUsernameEmpty : !loginData.username
-        }));
-
-        setValidationData(prevState => ({
-            ...prevState,
+            isUsernameEmpty : !loginData.username,
             isPasswordEmpty : !loginData.password
         }));
 
