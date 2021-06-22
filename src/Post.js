@@ -40,7 +40,7 @@ function Post(props) {
                 if (isLiked) {
                     newPost.likes = post.likes.filter(x => x.username !== currentUser);
                 } else {
-                    newPost.likes = [...post.likes, currentUser];
+                    newPost.likes = [...post.likes, {username: currentUser}];
                 }
                 setPost(newPost);
                 setIsLiked(!isLiked);

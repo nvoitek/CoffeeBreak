@@ -9,10 +9,9 @@ import coffee from './img/coffee.gif';
 
 function Feed(props) {
     const [posts, setPosts] = useState([]);
+    const [newestPostDate, setNewestPostDate] = useState({});
     const [latestPostDate, setLatestPostDate] = useState({});
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const [inView, setInView] = useState(false);
-
     const axiosConfig = {
         headers: {
             'Content-Type': 'application/json',
@@ -22,8 +21,6 @@ function Feed(props) {
     };
 
     useEffect(() => {
-        getPosts();
-
         let intervalId = setInterval(() => showLoginPopup(), 10000);
 
         return function cleanup() {
@@ -47,6 +44,9 @@ function Feed(props) {
                 console.log("RESPONSE RECEIVED: ", res);
                 setPosts([...res.data]);
 
+                let firstPost = res.data[0];
+                setNewestPostDate(firstPost.created_at);
+
                 let lastPost = res.data[res.data.length - 1];
                 setLatestPostDate(lastPost.created_at);
             })
@@ -56,23 +56,43 @@ function Feed(props) {
     }
 
     const getMorePosts = (e) => {
-        setInView(e);
         if (e) {
-            axios.post(
-                'https://akademia108.pl/api/social-app/post/older-then',
-                { date: latestPostDate },
-                axiosConfig)
-                .then((res) => {
-                    console.log("RESPONSE RECEIVED: ", res);
-                    setPosts(prevState => [...prevState, ...res.data]);
-
-                    let lastPost = res.data[res.data.length - 1];
-                    setLatestPostDate(lastPost.created_at);
-                })
-                .catch((err) => {
-                    console.log("AXIOS ERROR: ", err);
-                })
+            if (posts.length === 0) {
+                getPosts();
+            } else {
+                axios.post(
+                    'https://akademia108.pl/api/social-app/post/older-then',
+                    { date: latestPostDate },
+                    axiosConfig)
+                    .then((res) => {
+                        console.log("RESPONSE RECEIVED: ", res);
+                        setPosts(prevState => [...prevState, ...res.data]);
+    
+                        let lastPost = res.data[res.data.length - 1];
+                        setLatestPostDate(lastPost.created_at);
+                    })
+                    .catch((err) => {
+                        console.log("AXIOS ERROR: ", err);
+                    })
+            }
         }
+    }
+
+    const getNewPosts = () => {
+        axios.post(
+            'https://akademia108.pl/api/social-app/post/newer-then',
+            { date: newestPostDate },
+            axiosConfig)
+            .then((res) => {
+                console.log("RESPONSE RECEIVED: ", res);
+                setPosts(prevState => [...res.data, ...prevState]);
+
+                let firstPost = res.data[0];
+                setNewestPostDate(firstPost.created_at);
+            })
+            .catch((err) => {
+                console.log("AXIOS ERROR: ", err);
+            })
     }
 
     const onLogin = () => {
@@ -80,18 +100,8 @@ function Feed(props) {
         props.onLogin();
     }
 
-    const onAddPost = (postMessage) => {
-        let user_data = JSON.parse(localStorage.getItem("user_data"));
-        let newPost = {
-            user: {
-                username: user_data.username,
-                avatar_url: ''
-            },
-            created_at: Date.now(),
-            content: postMessage
-        };
-
-        setPosts(prevState => [newPost, ...prevState]);
+    const onAddPost = () => {
+        getNewPosts();
     }
 
     const onDeletePost = (postId) => {
@@ -100,7 +110,7 @@ function Feed(props) {
     }
 
     return (
-        <div inView={inView}>
+        <div>
             {(props.isLoggedIn ? <NewPost onAddPost={onAddPost} /> : '')}
             {
                 posts.map((item) => {

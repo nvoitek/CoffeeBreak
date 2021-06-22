@@ -29,7 +29,7 @@ function NewPost(props) {
                 console.log("RESPONSE RECEIVED: ", res);
 
                 if (res.data.message === 'Post added') {
-                    props.onAddPost(postMessage);
+                    props.onAddPost();
                     setPostMessage('');
                 }
 
