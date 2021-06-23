@@ -1,4 +1,5 @@
 import Post from './Post';
+import Recommendation from "./Recommendation";
 import NewPost from './NewPost';
 import Login from './Login';
 import { useState, useEffect } from 'react';
@@ -9,9 +10,12 @@ import coffee from './img/coffee.gif';
 
 function Feed(props) {
     const [posts, setPosts] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
     const [newestPostDate, setNewestPostDate] = useState({});
     const [latestPostDate, setLatestPostDate] = useState({});
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [isRightPaneVisible, setIsRightPaneVisible] = useState(false);
+
     const axiosConfig = {
         headers: {
             'Content-Type': 'application/json',
@@ -35,6 +39,21 @@ function Feed(props) {
         }
     };
 
+    const getRecommendations = () => {
+        axios.post(
+            'https://akademia108.pl/api/social-app/follows/recommendations',
+            '',
+            axiosConfig)
+            .then((res) => {
+                console.log("RESPONSE RECEIVED: ", res);
+                setRecommendations([...res.data]);
+                setIsRightPaneVisible(true);
+            })
+            .catch((err) => {
+                console.log("AXIOS ERROR: ", err);
+            })
+    };
+
     const getPosts = () => {
         axios.post(
             'https://akademia108.pl/api/social-app/post/latest',
@@ -49,11 +68,15 @@ function Feed(props) {
 
                 let lastPost = res.data[res.data.length - 1];
                 setLatestPostDate(lastPost.created_at);
+                
+                if(props.isLoggedIn){
+                    getRecommendations();
+                }
             })
             .catch((err) => {
                 console.log("AXIOS ERROR: ", err);
             })
-    }
+    };
 
     const getMorePosts = (e) => {
         if (e) {
@@ -67,7 +90,7 @@ function Feed(props) {
                     .then((res) => {
                         console.log("RESPONSE RECEIVED: ", res);
                         setPosts(prevState => [...prevState, ...res.data]);
-    
+
                         let lastPost = res.data[res.data.length - 1];
                         setLatestPostDate(lastPost.created_at);
                     })
@@ -98,6 +121,7 @@ function Feed(props) {
     const onLogin = () => {
         setIsPopupVisible(false);
         props.onLogin();
+        getRecommendations();
     }
 
     const onAddPost = () => {
@@ -127,6 +151,13 @@ function Feed(props) {
             <Popup visible={!props.isLoggedIn && isPopupVisible}>
                 <Login onLogin={onLogin} />
             </Popup>
+            <RightPane visible={props.isLoggedIn && isRightPaneVisible}>
+                {
+                    recommendations.map((item) => {
+                        return <Recommendation key={item.id} recommendation={item} />
+                    })
+                }
+            </RightPane>
         </div>
     );
 }
@@ -144,6 +175,21 @@ const Popup = styled.div`
         'bottom: 0px;'
         :
         'bottom: -250px;'
+    )}
+`;
+
+const RightPane = styled.div`
+  background-color: white;
+  border: 1px solid black;
+  position: fixed;
+  top: 45%;
+  width: 250px;
+  transition: all 1s;
+
+  ${props => (props.visible ?
+        'right: 0px;'
+        :
+        'right: -260px;'
     )}
 `;
 
