@@ -12,6 +12,7 @@ function Post(props) {
 
     const [post, setPost] = useState(props.post);
     const [isLiked, setIsLiked] = useState(props.post.likes.filter(x => x.username === currentUser).length !== 0);
+    const [isFollowed, setIsFollowed] = useState(props.follows.filter(x => x.username === currentUser).length !== 0);
 
     const axiosConfig = {
         headers: {
@@ -50,6 +51,27 @@ function Post(props) {
             })
     }
 
+    const onFollow = () => {
+        let url = '';
+        if (isFollowed) {
+            url = 'https://akademia108.pl/api/social-app/follows/disfollow'
+        } else {
+            url = 'https://akademia108.pl/api/social-app/follows/follow'
+        }
+
+        axios.post(
+            url,
+            { leader_id : props.post.user.id },
+            axiosConfig)
+            .then((res) => {
+                console.log("RESPONSE RECEIVED: ", res);
+                setIsFollowed(!isFollowed);
+            })
+            .catch((err) => {
+                console.log("AXIOS ERROR: ", err);
+            })
+    }
+
     const onDelete = () => {
         if (currentUser === props.post.user.username) {
             axios.post(
@@ -78,7 +100,7 @@ function Post(props) {
             <Row className="Row">
                 <FontAwesomeIcon className={"Icon " + (isLiked ? "liked" : "")} icon={faThumbsUp} onClick={onLike} />
                 <span>{post.likes.length}</span>
-                <FontAwesomeIcon className="Icon" icon={faUserPlus} />
+                <FontAwesomeIcon className={"Icon " + (isFollowed ? "followed" : "")} icon={faUserPlus} onClick={onFollow}/>
                 {
                     (currentUser === post.user.username) ? 
                     <FontAwesomeIcon className="Icon" icon={faTimes} onClick={onDelete}/> :
@@ -108,11 +130,13 @@ const Row = styled.div`
         color: orange;
     }
 
-    .Icon.liked {
+    .Icon.liked,
+    .Icon.followed {
         color: orange;        
     }
 
-    .Icon.liked:hover {
+    .Icon.liked:hover,
+    .Icon.followed:hover {
         color: black;
     }
 `;

@@ -11,6 +11,7 @@ import coffee from './img/coffee.gif';
 function Feed(props) {
     const [posts, setPosts] = useState([]);
     const [recommendations, setRecommendations] = useState([]);
+    const [follows, setFollows] = useState([]);
     const [newestPostDate, setNewestPostDate] = useState({});
     const [latestPostDate, setLatestPostDate] = useState({});
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -54,6 +55,20 @@ function Feed(props) {
             })
     };
 
+    const getFollows = () => {
+        axios.post(
+            'https://akademia108.pl/api/social-app/follows/allfollows',
+            '',
+            axiosConfig)
+            .then((res) => {
+                console.log("RESPONSE RECEIVED: ", res);
+                setFollows([...res.data]);
+            })
+            .catch((err) => {
+                console.log("AXIOS ERROR: ", err);
+            })
+    }
+
     const getPosts = () => {
         axios.post(
             'https://akademia108.pl/api/social-app/post/latest',
@@ -71,6 +86,7 @@ function Feed(props) {
                 
                 if(props.isLoggedIn){
                     getRecommendations();
+                    getFollows();
                 }
             })
             .catch((err) => {
@@ -133,12 +149,19 @@ function Feed(props) {
         setPosts(newPosts);
     }
 
+    const onFollow = (username) => {
+        setFollows([...follows, { username : username }]);
+        
+        let newRecommendations = recommendations.filter(x => x.username !== username);
+        setRecommendations(newRecommendations);
+    }
+
     return (
         <div>
             {(props.isLoggedIn ? <NewPost onAddPost={onAddPost} /> : '')}
             {
                 posts.map((item) => {
-                    return <Post key={item.id} post={item} onDeletePost={onDeletePost} />
+                    return <Post key={item.id} post={item} follows={follows} onDeletePost={onDeletePost} />
                 })
             }
             <InView onChange={getMorePosts}>
@@ -154,7 +177,7 @@ function Feed(props) {
             <RightPane visible={props.isLoggedIn && isRightPaneVisible}>
                 {
                     recommendations.map((item) => {
-                        return <Recommendation key={item.id} recommendation={item} />
+                        return <Recommendation key={item.id} recommendation={item} onFollow={onFollow}/>
                     })
                 }
             </RightPane>
@@ -174,13 +197,13 @@ const Popup = styled.div`
   ${props => (props.visible ?
         'bottom: 0px;'
         :
-        'bottom: -250px;'
+        'bottom: -260px;'
     )}
 `;
 
 const RightPane = styled.div`
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid grey;
   position: fixed;
   top: 45%;
   width: 250px;

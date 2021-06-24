@@ -12,6 +12,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMugHot } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
+import AllFollows from './AllFollows';
 
 function App() {
 
@@ -63,6 +64,9 @@ function App() {
               (isLoggedIn ?
                 <>
                   <NavListItem>
+                    <Link to="/follows">Follows</Link>
+                  </NavListItem>
+                  <NavListItem>
                     <Link to="/login" onClick={onLogout}>Logout</Link>
                   </NavListItem>
                 </>
@@ -86,13 +90,16 @@ function App() {
 
           <Switch>
             <Route exact path="/">
-              <Feed isLoggedIn={isLoggedIn} onLogin={onLogin}/>
+              <Feed isLoggedIn={isLoggedIn} onLogin={onLogin} />
             </Route>
             <Route path="/login">
               <Login onLogin={onLogin} />
             </Route>
             <Route path="/signup">
               <Signup />
+            </Route>
+            <Route path="/follows">
+              <AllFollows />
             </Route>
           </Switch>
         </ContentContainer>

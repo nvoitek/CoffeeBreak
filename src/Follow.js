@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
 
-function Recommendation(props) {
+function Follow(props) {
 
-    const [recommendation, setRecommendation] = useState(props.recommendation);
+    const [follow, setFollow] = useState(props.follow);
 
     const axiosConfig = {
         headers: {
@@ -16,15 +16,15 @@ function Recommendation(props) {
         }
     };
 
-    const onFollow = () => {
+    const onDelete = () => {
         axios.post(
-            'https://akademia108.pl/api/social-app/follows/follow',
-            { leader_id : props.recommendation.id },
+            'https://akademia108.pl/api/social-app/follows/disfollow',
+            { leader_id : props.follow.id },
             axiosConfig)
             .then((res) => {
                 console.log("RESPONSE RECEIVED: ", res);
 
-                props.onFollow(props.recommendation.username);
+                props.onDelete(props.follow.username);
             })
             .catch((err) => {
                 console.log("AXIOS ERROR: ", err);
@@ -32,20 +32,20 @@ function Recommendation(props) {
     }
 
     return (
-        <RecommendationContainer>
+        <FollowContainer>
             <Row className="Row">
-                <Image src={recommendation.avatar_url} alt={"avatar of " + recommendation.username}></Image>
-                <RecommendationHeader className="User">{recommendation.username}</RecommendationHeader>
+                <Image src={follow.avatar_url} alt={"avatar of " + follow.username}></Image>
+                <FollowHeader className="User">{follow.username}</FollowHeader>
             </Row>
             <Row className="Row">
-                <FontAwesomeIcon className="Icon" icon={faUserPlus} onClick={onFollow}/>
+                <FontAwesomeIcon className="Icon" icon={faTimes} onClick={onDelete}/>
             </Row>
-        </RecommendationContainer>
+        </FollowContainer>
     );
 }
 
-const RecommendationContainer = styled.div`
-    border: 1px solid grey;
+const FollowContainer = styled.div`
+    border-top: 1px solid grey;
 `;
 
 const Row = styled.div`
@@ -61,14 +61,6 @@ const Row = styled.div`
     .Icon:hover {
         color: orange;
     }
-
-    .Icon.liked {
-        color: orange;        
-    }
-
-    .Icon.liked:hover {
-        color: black;
-    }
 `;
 
 const Image = styled.img`
@@ -76,9 +68,9 @@ const Image = styled.img`
     width: 80px;
 `;
 
-const RecommendationHeader = styled.p`
+const FollowHeader = styled.p`
     font-weight: 600;
     margin: 15px;
 `;
 
-export default Recommendation;
+export default Follow;
