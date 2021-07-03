@@ -164,7 +164,7 @@ function Feed(props) {
                     </Container>
                 )}
             </InView>
-            <Popup visible={!props.isLoggedIn && isPopupVisible}>
+            <Popup visible={!props.isLoggedIn && isPopupVisible} data-testid="popup">
                 <Login onLogin={onLogin} />
             </Popup>
             <RightPane visible={props.isLoggedIn && isRightPaneVisible}>
