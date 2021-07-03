@@ -3,18 +3,12 @@ import {useHistory} from 'react-router-dom';
 import axios from 'axios';
 import Button from './styled-components/Button';
 import styled from 'styled-components';
+import { axiosConfig } from './helpers/config'
 
 function Login(props) {
 
     const [loginData, setLoginData] = useState({username : '', password : ''});
     const [validationData, setValidationData] = useState({hasErrors : false, isSubmitted : false, isUsernameEmpty : false, isPasswordEmpty : false});
-    
-    const axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-    };
 
     const history = useHistory();
 
