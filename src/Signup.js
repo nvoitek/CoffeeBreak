@@ -2,18 +2,12 @@ import { useState } from 'react';
 import axios from 'axios';
 import Button from './styled-components/Button';
 import styled from 'styled-components';
+import { axiosConfig } from './helpers/config'
 
 function Signup() {
 
     const [signupData, setSignupData] = useState({ username: '', email: '', password: '', confirmPassword: '' });
     const [validationData, setValidationData] = useState({ hasErrors: false, isSubmitted: false, isUsernameEmpty: false, isEmailEmpty: false, isPasswordEmpty: false, isConfirmPasswordEmpty: false, doPasswordMatch: false });
-
-    const axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-    };
 
     const updateFormFields = e => {
         setSignupData(prevState => ({

@@ -1,17 +1,10 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Follow from './Follow';
+import { axiosConfig } from './helpers/config'
 
 function AllFollows() {
     const [follows, setFollows] = useState([]);
-
-    const axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
-        }
-    };
 
     useEffect(() => {
         getFollows();

@@ -64,7 +64,7 @@ function Login(props) {
     
                 localStorage.setItem('user_data', JSON.stringify(res.data));
 
-                props.onLogin();
+                props.onLogin(res.data);
     
                 history.push("/");
             } else {

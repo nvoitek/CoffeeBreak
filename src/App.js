@@ -3,7 +3,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from "react-router-dom";
 import Feed from './Feed';
 import Signup from './Signup';
@@ -13,38 +14,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMugHot } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
 import AllFollows from './AllFollows';
+import { axiosConfig } from './helpers/config'
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('user_data') !== null);
-
-  const axiosConfig = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
-    }
-  };
+  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user_data')));
 
   const onLogout = () => {
-    if (isLoggedIn) {
-      axios.post(
-        'https://akademia108.pl/api/social-app/user/logout',
-        '',
-        axiosConfig)
-        .then((res) => {
-          console.log("RESPONSE RECEIVED: ", res);
-          setIsLoggedIn(false);
-          localStorage.clear();
-        })
-        .catch((err) => {
-          console.log("AXIOS ERROR: ", err);
-        })
-    }
+    axios.post(
+      'https://akademia108.pl/api/social-app/user/logout',
+      '',
+      axiosConfig)
+      .then((res) => {
+        console.log("RESPONSE RECEIVED: ", res);
+        setCurrentUser(null);
+        localStorage.clear();
+      })
+      .catch((err) => {
+        console.log("AXIOS ERROR: ", err);
+      })
   };
 
-  const onLogin = () => {
-    setIsLoggedIn(true);
+  const onLogin = (user) => {
+    setCurrentUser(user);
   }
 
 
@@ -61,7 +53,7 @@ function App() {
               <Link to="/">Home</Link>
             </NavListItem>
             {
-              (isLoggedIn ?
+              (currentUser ?
                 <>
                   <NavListItem>
                     <Link to="/follows">Follows</Link>
@@ -90,13 +82,13 @@ function App() {
 
           <Switch>
             <Route exact path="/">
-              <Feed isLoggedIn={isLoggedIn} onLogin={onLogin} />
+              <Feed isLoggedIn={currentUser} onLogin={onLogin} />
             </Route>
             <Route path="/login">
-              <Login onLogin={onLogin} />
+              {currentUser ? <Redirect to="/" /> : <Login onLogin={onLogin} />}
             </Route>
             <Route path="/signup">
-              <Signup />
+              {currentUser ? <Redirect to="/" /> : <Signup />}
             </Route>
             <Route path="/follows">
               <AllFollows />

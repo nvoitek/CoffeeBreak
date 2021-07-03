@@ -2,17 +2,10 @@ import { useState } from 'react';
 import axios from 'axios';
 import Button from './styled-components/Button';
 import styled from 'styled-components';
+import { axiosConfig } from './helpers/config'
 
 function NewPost(props) {
     const [postMessage, setPostMessage] = useState('');
-
-    const axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
-        }
-    };
 
     const onPostMessageChange = (e) => {
         setPostMessage(e.target.value);
