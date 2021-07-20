@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp, faUserPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
 import ReactTimeAgo from 'react-time-ago'
-import { axiosConfig } from './helpers/config'
 
 function Post(props) {
 
@@ -14,6 +13,14 @@ function Post(props) {
     const [post, setPost] = useState(props.post);
     const [isLiked, setIsLiked] = useState(props.post.likes.filter(x => x.username === currentUser).length !== 0);
     const [isFollowed, setIsFollowed] = useState(props.follows.filter(x => x.username === currentUser).length !== 0);
+
+    let axiosConfig = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
+        }
+    };
 
     const onLike = () => {
         let url = '';

@@ -3,11 +3,18 @@ import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
-import { axiosConfig } from './helpers/config'
 
 function Recommendation(props) {
 
     const [recommendation, setRecommendation] = useState(props.recommendation);
+
+    let axiosConfig = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
+        }
+    };
 
     const onFollow = () => {
         axios.post(

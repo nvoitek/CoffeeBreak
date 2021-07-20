@@ -7,7 +7,6 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { InView } from 'react-intersection-observer'
 import coffee from './img/coffee.gif';
-import { axiosConfig } from './helpers/config'
 
 function Feed(props) {
     const [posts, setPosts] = useState([]);
@@ -17,6 +16,14 @@ function Feed(props) {
     const [latestPostDate, setLatestPostDate] = useState({});
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [isRightPaneVisible, setIsRightPaneVisible] = useState(false);
+
+    let axiosConfig = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
+        }
+    };
 
     useEffect(() => {
         let intervalId = setInterval(() => showLoginPopup(), 10000);
