@@ -14,20 +14,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMugHot } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components';
 import AllFollows from './AllFollows';
+import { axiosConfig } from './helpers/config';
 
 function App() {
 
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user_data')));
 
-  let axiosConfig = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
-    }
-  };
-
   const onLogout = () => {
+    console.log(axiosConfig);
     axios.post(
       'https://akademia108.pl/api/social-app/user/logout',
       '',

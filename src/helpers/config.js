@@ -1,8 +1,13 @@
-// TODO: do AxiosContext
-//   export const axiosConfig = {
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Accept': 'application/json',
-//       'Authorization': 'Bearer ' + ( localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
-//     }
-//   };
+  let jwt_token = '';
+
+  export const axiosConfig = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + jwt_token
+    }
+  };
+
+  export function setToken(newToken) {
+    jwt_token = newToken;
+  }

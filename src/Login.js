@@ -3,19 +3,12 @@ import {useHistory} from 'react-router-dom';
 import axios from 'axios';
 import Button from './styled-components/Button';
 import styled from 'styled-components';
+import {axiosConfig, setToken} from './helpers/config';
 
 function Login(props) {
 
     const [loginData, setLoginData] = useState({username : '', password : ''});
     const [validationData, setValidationData] = useState({hasErrors : false, isSubmitted : false, isUsernameEmpty : false, isPasswordEmpty : false});
-
-    let axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + (localStorage.getItem('user_data') !== null ? JSON.parse(localStorage.getItem('user_data')).jwt_token : '')
-        }
-    };
 
     const history = useHistory();
 
@@ -66,6 +59,7 @@ function Login(props) {
                 localStorage.setItem('user_data', JSON.stringify(res.data));
 
                 props.onLogin(res.data);
+                setToken(res.data.jwt_token);
     
                 history.push("/");
             } else {
